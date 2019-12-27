@@ -17,16 +17,16 @@ def distinct_words(corpus):
     corpus_words = sorted(list(set(word for doc in corpus for word in doc)))
     num_corpus_words = len(corpus_words)
     return corpus_words, num_corpus_words
-    
-    def compute_co_occurrence_matrix(corpus, window_size=4):
+
+def compute_co_occurrence_matrix(corpus, window_size=4):
     """ Compute co-occurrence matrix for the given corpus and window_size (default of 4).
-    
+
         Note: Each word in a document should be at the center of a window. Words near edges will have a smaller
-              number of co-occurring words.
-              
-              For example, if we take the document "START All that glitters is not gold END" with window size of 4,
-              "All" will co-occur with "START", "that", "glitters", "is", and "not".
-    
+            number of co-occurring words.
+            
+            For example, if we take the document "START All that glitters is not gold END" with window size of 4,
+            "All" will co-occur with "START", "that", "glitters", "is", and "not".
+
         Params:
             corpus (list of list of strings): corpus of documents
             window_size (int): size of context window
@@ -39,7 +39,7 @@ def distinct_words(corpus):
     words, num_words = distinct_words(corpus)
     M = None
     word2Ind = {}
-    
+
     M = np.zeros((num_words, num_words)) # Co-occurence matrix
     word2Ind = {word: ind for ind, word in enumerate(words)} # Dict that maps a given word to some index for M
     for doc in corpus: # Iterate through all documents in corpus
@@ -51,12 +51,12 @@ def distinct_words(corpus):
             for col_ind in col_inds:
                 M[row_ind, col_ind] +=1 
     return M, word2Ind
-    
-    def reduce_to_k_dim(M, k=2):
+
+def reduce_to_k_dim(M, k=2):
     """ Reduce a co-occurence count matrix of dimensionality (num_corpus_words, num_corpus_words)
         to a matrix of dimensionality (num_corpus_words, k) using the following SVD function from Scikit-Learn:
             - http://scikit-learn.org/stable/modules/generated/sklearn.decomposition.TruncatedSVD.html
-    
+
         Params:
             M (numpy matrix of shape (number of corpus words, number of corpus words)): co-occurence matrix of word counts
             k (int): embedding size of each word after dimension reduction
@@ -71,8 +71,8 @@ def distinct_words(corpus):
     M_reduced = svd.fit_transform(M)
     print("Done.")
     return M_reduced
-    
-    def plot_embeddings(M_reduced, word2Ind, words):
+
+def plot_embeddings(M_reduced, word2Ind, words):
     """ Plot in a scatterplot the embeddings of the words specified in the list "words".
         NOTE: do not plot all the words listed in M_reduced / word2Ind.
         Include a label next to each point.
@@ -85,7 +85,7 @@ def distinct_words(corpus):
 
     x_coords = M_reduced[:, 0]
     y_coords = M_reduced[:, 1]
-    
+
     for word in words:
         ind = word2Ind[word]
         (x, y) = M_reduced[ind]
